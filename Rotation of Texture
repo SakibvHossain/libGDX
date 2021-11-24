@@ -1,0 +1,57 @@
+package com.sakibxhossain.stq;
+
+import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.GL30;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.utils.ScreenUtils;
+
+public class SaveTheQueen extends ApplicationAdapter {
+
+	private OrthographicCamera camera;  // Camera is uesd to display epecific portion of the world. World is scene in you game 
+	private SpriteBatch spriteBatch; // Is used to command to display your drawing
+	private Sprite sprite;          // Complex data type contains a lot of attributes to represent a graphical object that has a position in 2D space width and heigh.
+	private Texture texture;        // The holds acutal image that store data at run time
+	private float rotationalValue;  // We take it to keep track of the current rotation like 10 degree rotated that will be stored in here again 20 and so on until it gets 360 because 360 mod 360 is 0 means come to initial position
+	
+	@Override
+	public void create () {
+		float w = Gdx.graphics.getWidth();  // Simply taken height of the game world and width
+		float h = Gdx.graphics.getHeight();
+		camera = new OrthographicCamera(1,h/w); // Setting the camera with viewport height and width. The specific portion of game world is viewport.
+		spriteBatch = new SpriteBatch();        
+		texture = new Texture("badlogic.jpg");   // Simple just a image 
+		texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear); // Filtering the image it can be linear or I forget another type 
+		TextureRegion region = new TextureRegion(texture,0,0,513,275);       //Sprite holds a reference to a TextureRegion class that tern is a means of to cut out certain portion of texture.
+		sprite = new Sprite(region);                   // Just set it on sprite
+		sprite.setSize(0.4f,0.4f*(sprite.getHeight()/sprite.getWidth())); // 0.4 means 40% size width and height
+		sprite.setOrigin(sprite.getWidth()/2,sprite.getHeight()/2); // Just setting the orgin
+		sprite.setPosition(-sprite.getWidth()/2,-sprite.getHeight()/2); // Making it into the middle
+	}
+
+	@Override
+	public void render () {
+		Gdx.gl.glClearColor(1,1,1,1);             // Screen color 
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);  // Refresh the screen 
+		spriteBatch.setProjectionMatrix(camera.combined); //Setting Projection matrix to the camera combined matrix
+		spriteBatch.begin();
+		float degreePerSecond = 10.0f;  // Each time rotate the image per second based on this value
+		rotationalValue = rotationalValue + degreePerSecond * Gdx.graphics.getDeltaTime() % 360; 
+		sprite.setRotation(rotationalValue); // 10, 20, 30 ,40 , ...........
+		sprite.draw(spriteBatch); // Draw what we have created in create() function.
+		spriteBatch.end();
+	}
+	
+	@Override
+	public void dispose () {
+		spriteBatch.dispose();
+		texture.dispose();
+	}
+}
+
+/* This is the simple code to rotate the texture and texture is absolute image data type */
